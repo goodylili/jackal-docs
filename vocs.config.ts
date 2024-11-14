@@ -1,15 +1,32 @@
 import {defineConfig} from "vocs";
 
 export default defineConfig({
-    // TODO: change the base URL before deploying to production
-    baseUrl: 'http://localhost:5174/',
+    // TODO: change the base URL and edit link before deploying to production
+    editLink: {
+        pattern: 'https://github.com/goodylili/jackal-docs/tree/main/docs/pages/:path',
+        text: 'Edit this Page',
+    },
+    socials: [
+        {
+            icon: 'github',
+            link: 'https://github.com/JackalLabs',
+        },
+        {
+            icon: 'x',
+            link: 'https://x.com/Jackal_Protocol',
+        },
+        {
+            icon: 'discord',
+            link: 'https://discord.com/invite/5GKym3p6rj'
+        },
+    ],
     title: "Jackal",
     description: "Decentralized Cloud Storage",
     logoUrl: {light: "/jackal-dark.png", dark: "/jackal-light.png"},
     topNav: [
-        {text: "The Blockchain", link: "/blockchain", match: "/blockchain"},
+        {text: "Blockchain", link: "/blockchain", match: "/blockchain"},
         {text: "Nodes", link: "/nodes", match: "/nodes"},
-        {text: "Providing Storage", link: "/providers", match: "/providers"},
+        {text: "Providers", link: "/providers", match: "/providers"},
         {text: "Developers", link: "/developers", match: "/developers"},
     ],
     sidebar: [
@@ -27,20 +44,99 @@ export default defineConfig({
             ],
         },
         {
-            text: "The Blockchain",
-            items: [],
+            text: "Wallet",
+            items: [
+                {
+                    text: "Keplr",
+                    link: "/wallet/keplr",
+                },
+                {
+                    text: "Leap",
+                    link: "/wallet/leap",
+                },
+                {
+                    text: "Command Line",
+                    link: "/wallet/command-line",
+                },
+            ],
+        },
+        {
+            text: "Blockchain",
+            items: [
+                {
+                    text: "Storage Module",
+                    link: "/blockchain/storage-module",
+                },
+                {
+                    text: "File Tree Module",
+                    link: "/blockchain/file-tree-module",
+                },
+                {
+                    text: "Mint Module",
+                    link: "/blockchain/mint-module",
+                },
+                {
+                    text: "Name Service Module",
+                    link: "/blockchain/name-service",
+                },
+            ],
         },
         {
             text: "Nodes",
-            items: [],
+            items: [
+                {
+                    text: "Hardware",
+                    link: "/nodes/Hardware",
+                },
+                {
+                    text: "Install a Full Node",
+                    link: "/nodes/install-full-node",
+                },
+                {
+                    text: "Join a Network",
+                    link: "/nodes/joining-networks",
+                },
+                {
+                    text: "Create a validator",
+                    link: "/nodes/create-validator",
+                },
+            ],
         },
         {
             text: "Providers",
-            items: [],
+            items: [
+                {
+                    text: "Create a Storage Provider",
+                    link: "/providers/create-provider",
+                },
+                {
+                    text: "Sequoia Config",
+                    link: "/providers/sequoia-config",
+                },
+                {
+                    text: "Sequoia API",
+                    link: "/providers/sequoia-api",
+                },
+            ],
         },
         {
             text: "Developers",
-            items: [],
+            items: [
+                {
+                    text: "Jackal.js Quickstart",
+                    link: "/developers/jackaljs-quickstart",
+                },
+                {
+                    text: "Archway Quickstart",
+                    link: "/developers/archway-quickstart",
+                },
+                {
+                    text: "Archway Quickstart",
+                    link: "/developers/archway-quickstart",
+                },
+
+            ],
         },
+
     ],
 });
