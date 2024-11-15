@@ -1,6 +1,17 @@
 import {defineConfig} from "vocs";
 
+// @ts-ignore
 export default defineConfig({
+
+    // theme: {
+    //     accentColor: {
+    //         backgroundAccent: { light: 'white', dark: 'black' },
+    //         backgroundAccentHover: { light: 'whitesmoke', dark: 'gray' },
+    //         backgroundAccentText: { light: 'black', dark: 'white' },
+    //         textAccent: { light: 'black', dark: 'white' },
+    //     }
+    // },
+
     // TODO: change the base URL and edit link before deploying to production
     editLink: {
         pattern: 'https://github.com/goodylili/jackal-docs/tree/main/docs/pages/:path',
@@ -38,13 +49,14 @@ export default defineConfig({
                     link: "/",
                 },
                 {
-                    text: "The Jackal Ecosystem",
-                    link: "/jackal-ecosystem",
+                    text: "The $JKL Token",
+                    link: "/the-jkl-token",
                 },
             ],
         },
         {
             text: "Wallet",
+            collapsed: true,
             items: [
                 {
                     text: "Keplr",
@@ -62,6 +74,7 @@ export default defineConfig({
         },
         {
             text: "Blockchain",
+            collapsed: true,
             items: [
                 {
                     text: "Storage Module",
@@ -83,6 +96,7 @@ export default defineConfig({
         },
         {
             text: "Nodes",
+            collapsed: true,
             items: [
                 {
                     text: "Hardware",
@@ -104,6 +118,8 @@ export default defineConfig({
         },
         {
             text: "Providers",
+            collapsed: true,
+
             items: [
                 {
                     text: "Create a Storage Provider",
@@ -121,6 +137,7 @@ export default defineConfig({
         },
         {
             text: "Developers",
+            collapsed: true,
             items: [
                 {
                     text: "Jackal.js Quickstart",
@@ -131,8 +148,8 @@ export default defineConfig({
                     link: "/developers/archway-quickstart",
                 },
                 {
-                    text: "Archway Quickstart",
-                    link: "/developers/archway-quickstart",
+                    text: "Embedding Archway Contracts",
+                    link: "/developers/embedding-archway",
                 },
 
             ],
