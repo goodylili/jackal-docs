@@ -64,12 +64,8 @@ export default defineConfig({
             collapsed: true,
             items: [
                 {
-                    text: "Keplr",
-                    link: "/wallet/keplr",
-                },
-                {
-                    text: "Leap",
-                    link: "/wallet/leap",
+                    text: "Software Wallets",
+                    link: "/wallet/software-wallets",
                 },
                 {
                     text: "Command Line",
@@ -104,7 +100,7 @@ export default defineConfig({
             collapsed: true,
             items: [
                 {
-                    text: "Hardware",
+                    text: "Hardware Specifications",
                     link: "/nodes/Hardware",
                 },
                 {
