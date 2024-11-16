@@ -2,16 +2,21 @@ import {defineConfig} from "vocs";
 
 // @ts-ignore
 export default defineConfig({
-
-    // theme: {
-    //     accentColor: {
-    //         backgroundAccent: { light: 'white', dark: 'black' },
-    //         backgroundAccentHover: { light: 'whitesmoke', dark: 'gray' },
-    //         backgroundAccentText: { light: 'black', dark: 'white' },
-    //         textAccent: { light: 'black', dark: 'white' },
-    //     }
-    // },
-
+    theme: {
+        accentColor: {
+            light: '#191a14',
+            dark: '#e9f450',
+        },
+        // variables: {
+        //     color: {
+        //         background: {
+        //             light: 'white',
+        //             dark: 'black'
+        //         }
+        //
+        //     },
+        // },
+    },
     // TODO: change the base URL and edit link before deploying to production
     editLink: {
         pattern: 'https://github.com/goodylili/jackal-docs/tree/main/docs/pages/:path',
@@ -49,8 +54,8 @@ export default defineConfig({
                     link: "/",
                 },
                 {
-                    text: "The $JKL Token",
-                    link: "/the-jkl-token",
+                    text: "The Jackal Protocol",
+                    link: "/jackal-ecosystem",
                 },
             ],
         },
