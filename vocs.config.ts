@@ -40,10 +40,10 @@ export default defineConfig({
     description: "Decentralized Cloud Storage",
     logoUrl: {light: "/jackal-dark.png", dark: "/jackal-light.png"},
     topNav: [
-        {text: "Blockchain", link: "/blockchain", match: "/blockchain"},
-        {text: "Nodes", link: "/nodes", match: "/nodes"},
-        {text: "Providers", link: "/providers", match: "/providers"},
-        {text: "Developers", link: "/developers", match: "/developers"},
+        {text: "Blockchain", link: "/blockchain/storage-module", match: "/blockchain"},
+        {text: "Nodes", link: "/nodes/Hardware", match: "/nodes"},
+        {text: "Providers", link: "/providers/create-provider", match: "/providers"},
+        {text: "Developers", link: "/developers/archway-quickstart", match: "/developers"},
     ],
     sidebar: [
         {
