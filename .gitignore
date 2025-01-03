@@ -1,7 +1,6 @@
 .idea
 .DS_Store
 site/node_modules
-dist
 node_modules
 _lib
 tsconfig.tsbuildinfo
