@@ -1,0 +1,53 @@
+# Create Accounts via CLI
+
+You can easily create wallets without a traditional GUI via Canine: Jackal CLI tool.
+
+Canine is handy if you’re developing apps or you want to automate stuff on the Jackal Protocol.
+
+::::steps
+## Download and Install
+
+First, head to the [Releases](https://github.com/JackalLabs/canine-chain/releases) page on GitHub to download the binary for your system.
+
+Execute the `canine` command to verify your installation.
+
+```bash [Terminal]
+canine
+```
+
+You should get the complete set of commands available on Canine if your installation is successful.
+
+
+## Setting up an Account
+
+You can create a new account with the `keys add` command :
+
+```bash [Terminal]
+canined keys add {account name}
+```
+
+If you have an existing account, add the `--recover` flag to add it.
+
+```bash [Terminal]
+canined keys add {account name} --recover
+```
+
+:::info
+You can import the accounts on a software or hardware wallet for more sophisticated interactions.
+:::
+
+
+## Buying Storage
+
+You can purchase storage with your account in the same vein. Execute this command to buy 1TB of storage for a month:
+
+
+```bash [Terminal]
+canined tx storage buy-storage $(canined keys show {account name} -a) 31 1099511627776 ujkl --from {account name} --gas-prices=0.02ujkl
+```
+
+In this case, `31` is 31 days, or one month, you can specify the days and amount of storage.
+
+Here,  `1099511627776` is how many bytes you wish to purchase, this value is 1TiB, you can increase this or decrease this as you please.
+
+::::

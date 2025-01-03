@@ -1,0 +1,279 @@
+# Jackal Protocol Documentation
+
+## Overview
+With Jackal storage, you can purchase and manage storage on-demand for your Archway contracts, without the need for intermediaries or credit cards. This approach empowers users to store their data securely and privately, while developers can build more resilient and innovative applications.
+
+## Getting Started with Jackal.js
+
+### Installation
+```bash [terminal]
+npm install @jackallabs/jackal.js
+```
+
+### Basic Setup
+To get started building with Jackal, we first need to create a StorageHandler.
+
+```typescript
+import type { IClientSetup, IStorageHandler, ClientHandler } from '@jackallabs/jackal.js'
+
+// Chain Configuration
+const chainId = 'jackal-1'
+const mainnet = {
+    chainId,
+    endpoint: 'https://rpc.jackalprotocol.com',
+    chainConfig: {
+        chainId,
+        chainName: 'Jackal Mainnet',
+        rpc: 'https://rpc.jackalprotocol.com',
+        rest: 'https://api.jackalprotocol.com',
+        bip44: {
+            coinType: 118
+        },
+        stakeCurrency: {
+            coinDenom: 'JKL',
+            coinMinimalDenom: 'ujkl',
+            coinDecimals: 6
+        },
+        bech32Config: {
+            bech32PrefixAccAddr: 'jkl',
+            bech32PrefixAccPub: 'jklpub',
+            bech32PrefixValAddr: 'jklvaloper',
+            bech32PrefixValPub: 'jklvaloperpub',
+            bech32PrefixConsAddr: 'jklvalcons',
+            bech32PrefixConsPub: 'jklvalconspub'
+        },
+        currencies: [
+            {
+                coinDenom: 'JKL',
+                coinMinimalDenom: 'ujkl',
+                coinDecimals: 6
+            }
+        ],
+        feeCurrencies: [
+            {
+                coinDenom: 'JKL',
+                coinMinimalDenom: 'ujkl',
+                coinDecimals: 6,
+                gasPriceStep: {
+                    low: 0.002,
+                    average: 0.002,
+                    high: 0.02
+                }
+            }
+        ],
+        features: []
+    }
+}
+
+// Archway Configuration
+export const archwayChainId = 'archway-1'
+export const archwayConfig = {
+    chainId: archwayChainId,
+    chainName: 'Archway',
+    rpc: 'https://archway-rpc.polkachu.com',
+    rest: 'https://archway-api.polkachu.com',
+    bip44: {
+        coinType: 118
+    },
+    stakeCurrency: {
+        coinDenom: 'ARCH',
+        coinMinimalDenom: 'aarch',
+        coinDecimals: 18
+    },
+    bech32Config: {
+        bech32PrefixAccAddr: 'arch',
+        bech32PrefixAccPub: 'archpub',
+        bech32PrefixValAddr: 'archvaloper',
+        bech32PrefixValPub: 'archvaloperpub',
+        bech32PrefixConsAddr: 'archvalcons',
+        bech32PrefixConsPub: 'archvalconspub'
+    },
+    currencies: [
+        {
+            coinDenom: 'ARCH',
+            coinMinimalDenom: 'aarch',
+            coinDecimals: 18
+        }
+    ],
+    feeCurrencies: [
+        {
+            coinDenom: 'ARCH',
+            coinMinimalDenom: 'aarch',
+            coinDecimals: 18,
+            gasPriceStep: {
+                low: 196000000000,
+                average: 225400000000,
+                high: 254800000000
+            }
+        }
+    ],
+    features: []
+}
+
+// Client Setup
+const setup: IClientSetup = {
+    host: {
+        chainId: archwayChainId,
+        endpoint: 'https://archway-rpc.polkachu.com',
+        chainConfig: archwayConfig,
+    },
+    endpoint: mainnet.endpoint,
+    chainConfig: mainnet.chainConfig,
+    chainId: mainnet.chainId,
+    networks: ["archway", "jackal"],
+    selectedWallet: 'keplr',
+}
+
+const myClient = await ClientHandler.connect(setup)
+const storage: IStorageHandler = await myClient.createWasmStorageHandler()
+storage.loadProviderPool() // load the available provider pool
+```
+
+## Core Functions
+
+### Storage Purchase
+Purchasing storage requires an IBC send to ensure the account on Jackal has the correct amount of tokens. The following code demonstrates how to IBC send over the required JKL difference.
+
+```typescript
+async function buyStorage () {
+    const gb = SOME_GB_VALUE
+    const days = SOME_DAY_COUNT
+    const usd = getUSDPrice() // get USD price of storage plan, function body not included here.
+    const price = Math.floor(usd / PRICE_OF_JACKAL_TOKEN_IN_USD * 1000000 * 1.15)
+    const coin = await myClient.getJklBalance()
+    const hostBal = await myClient.getHostNetworkBalance(myClient.getHostAddress(), 'ibc/926432AE1C5FA4F857B36D970BE7774C7472079506820B857B75C5DE041DD7A3')
+    let bal = coin.amount
+
+    if (bal < price) {
+        if (hostBal.amount < price - bal) {
+            throw ('You do not have enough JKL on Archway')
+        }
+        const c: Coin = {
+            amount: (price - bal).toString(),
+            denom: 'ibc/926432AE1C5FA4F857B36D970BE7774C7472079506820B857B75C5DE041DD7A3'
+        }
+        await myClient.ibcSend(myClient.getICAJackalAddress(), c, 'channel-14')
+    }
+    const c = await myClient.getJklBalance()
+    bal = c.amount
+    while (bal < price) {
+        await new Promise(r => setTimeout(r, 1000))
+        const c = await myClient.getJklBalance()
+        bal = c.amount
+    }
+
+    await storage.purchaseStoragePlan({
+        gb,
+        days,
+        broadcastOptions: {
+            monitorTimeout: 5 * 60 // 5 minute timeout since we're using IBC
+        }
+    })
+}
+```
+
+### File Operations
+
+#### Uploading Files
+```typescript
+// unlock full feature set
+await storage.upgradeSigner()
+
+// if first time using account, initialize
+await storage.initStorage()
+
+// load root directory if not already loaded
+await storage.loadDirectory('Home')
+
+// upload encrypted file
+/* get your file into the browser */
+const myFiles = [/* Files */]
+await storage.queuePrivate(myFiles)
+await storage.processAllQueues()
+
+// upload public (unencrypted) file
+/* get your file into the browser */
+const myPublicFiles = [/* Files */]
+await storage.queuePublic(myPublicFiles)
+await storage.processAllQueues()
+```
+
+#### Downloading Files
+```typescript
+// create a tracker to monitor download progress
+const tracker = { progress: 0, chunks: [] }
+const myFileName = 'myFileName.txt'
+// Home is the default root folder for all Jackal.js accounts
+const myFile = await storage.downloadFile(`Home/${myFileName}`, tracker)
+// do something with myFile
+```
+
+## Contract Integration
+
+### Custom Contract Example
+Below is a trimmed down version of our outpost factory contract. This contract provides two main functions: CreateOutpost for creating a new copy of the storage-outpost, and a query function for determining which controller contract to call for file uploads.
+
+```rust
+#[cfg(not(feature = "library"))]
+use cosmwasm_std::entry_point;
+use cosmwasm_std::{to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
+use crate::error::ContractError;
+use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::state::{ContractState, STATE};
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn instantiate(
+    deps: DepsMut,
+    _env: Env,
+    info: MessageInfo,
+    msg: InstantiateMsg,
+) -> Result<Response, ContractError> {
+    STATE.save(
+        deps.storage,
+        &ContractState::new(msg.storage_outpost_code_id, info.sender.to_string()),
+    )?;
+    Ok(Response::default())
+}
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn execute(
+    deps: DepsMut,
+    env: Env,
+    info: MessageInfo,
+    msg: ExecuteMsg,
+) -> Result<Response, ContractError> {
+    match msg {
+        ExecuteMsg::CreateOutpost {
+            channel_open_init_options,
+        } => execute::create_outpost(deps, env, info, channel_open_init_options),
+        ExecuteMsg::MapUserOutpost { outpost_owner} => execute::map_user_outpost(deps, env, info, outpost_owner),
+    }
+}
+
+#[cfg_attr(not(feature = "library"), entry_point)]
+pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
+    match msg {
+        QueryMsg::GetContractState {} => to_json_binary(&query::state(deps)?),
+        QueryMsg::GetUserOutpostAddress { user_address } => to_json_binary(&query::user_outpost_address(deps, user_address)?),
+        QueryMsg::GetAllUserOutpostAddresses {  } => to_json_binary(&query::get_all_user_outpost_addresses(deps)?),
+    }
+}
+
+// Implementation modules
+mod execute {
+    // ... (rest of the execute implementation)
+}
+
+mod query {
+    // ... (rest of the query implementation)
+}
+```
+
+For more detailed information about the contract implementation, please refer to our [GitHub repository](https://github.com/JackalLabs/storage-outpost/blob/master/cross-contract/contracts/outpost-factory/src/contract.rs).
+### Integrating Custom Contracts with Jackal.js
+To use a custom contract instead of the default Outpost Factory with Jackal.js, simply add a contract field to the createWasmStorageHandler function call:
+
+```typescript
+myStorageHandler.createWasmStorageHandler({contract: 'YOUR_CONTRACT_ADDRESS_HERE'})
+```
+

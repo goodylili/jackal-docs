@@ -1,20 +1,17 @@
 {
-  "name": "Docs",
-  "private": true,
+  "name": "jackal",
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vocs dev",
-    "build": "vocs build",
-    "preview": "vocs preview"
-  },
   "dependencies": {
+    "@types/react": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "vocs": "latest"
+    "typescript": "latest",
+    "vocs": "^1.0.0-alpha.62"
   },
-  "devDependencies": {
-    "@types/react": "latest",
-    "typescript": "latest"
+  "scripts": {
+    "docs:dev": "vocs dev",
+    "docs:build": "vocs build",
+    "docs:preview": "vocs preview"
   }
 }

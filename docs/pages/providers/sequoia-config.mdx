@@ -1,0 +1,146 @@
+# Sequoia Configuration Documentation
+
+## Overview
+This document provides detailed information about configuring a Sequoia node. The configuration is specified in YAML format and includes settings for network connectivity, storage management, chain interaction, and API endpoints.
+
+## Configuration Structure
+
+### Example Configuration
+```yaml
+######################
+### Sequoia Config ###
+######################
+
+queue_interval: 10
+proof_interval: 120
+stray_manager:
+    check_interval: 30
+    refresh_interval: 120
+    hands: 2
+chain_config:
+    bech32_prefix: jkl
+    rpc_addr: http://localhost:26657
+    grpc_addr: 127.0.0.1:9090
+    gas_price: 0.02ujkl
+    gas_adjustment: 1.5
+domain: https://example.com
+total_bytes_offered: 1092616192
+data_directory: $HOME/.sequoia/data
+api_config:
+    port: 3333
+    ipfs_port: 4005
+    ipfs_domain: dns4/ipfs.example.com/tcp/4001
+proof_threads: 1000
+```
+
+## Configuration Parameters
+
+### Core Settings
+
+#### Basic Configuration
+- `queue_interval` (integer)
+  - Time in seconds between queue flushes
+  - Should not be less than a single block duration
+  - Default: `10`
+
+- `proof_interval` (integer)
+  - Time in seconds between provider self-scans for posting proofs
+  - Default: `120`
+
+- `domain` (string)
+  - Domain name for user access to the provider
+  - Example: `https://example.com`
+
+- `total_bytes_offered` (integer)
+  - Total storage capacity offered in bytes
+  - Example: `1092616192`
+
+- `data_directory` (string)
+  - Location for storing raw file data and tree caching
+  - Example: `$HOME/.sequoia/data`
+
+- `proof_threads` (integer)
+  - Number of files that can be proven in parallel
+  - Recommendation: Lower this value on machines with limited resources
+  - Default: `1000`
+
+### Stray Manager Configuration
+The `stray_manager` section controls how the node handles unclaimed files and related operations.
+
+```yaml
+stray_manager:
+    check_interval: 30
+    refresh_interval: 120
+    hands: 2
+```
+
+- `check_interval` (integer)
+  - Time in seconds between checks for newly claimable files on chain
+  - Default: `30`
+
+- `refresh_interval` (integer)
+  - Time in seconds between internal stray list cache refreshes
+  - Default: `120`
+
+- `hands` (integer)
+  - Number of concurrent workers searching for and claiming strays
+  - Default: `2`
+
+### Chain Configuration
+The `chain_config` section defines parameters for interacting with the blockchain.
+
+```yaml
+chain_config:
+    bech32_prefix: jkl
+    rpc_addr: http://localhost:26657
+    grpc_addr: 127.0.0.1:9090
+    gas_price: 0.02ujkl
+    gas_adjustment: 1.5
+```
+
+- `bech32_prefix` (string)
+  - Bech32 address prefix
+  - Only modified when working with Jackal forks
+  - Default: `jkl`
+
+- `rpc_addr` (string)
+  - RPC node address for transaction submission and queries
+  - Default: `http://localhost:26657`
+
+- `grpc_addr` (string)
+  - GRPC node address for transaction submission and queries
+  - Default: `127.0.0.1:9090`
+
+- `gas_price` (string)
+  - Network gas cost
+  - Format: `{amount}{denom}`
+  - Default: `0.02ujkl`
+
+- `gas_adjustment` (float)
+  - Gas multiplier for transaction fee calculation
+  - Increase only if transactions frequently fail due to insufficient gas
+  - Default: `1.5`
+
+### API Configuration
+The `api_config` section controls the node's API and IPFS connectivity settings.
+
+```yaml
+api_config:
+    port: 3333
+    ipfs_port: 4005
+    ipfs_domain: dns4/ipfs.example.com/tcp/4001
+```
+
+- `port` (integer)
+  - Port number for provider API access
+  - Default: `3333`
+
+- `ipfs_port` (integer)
+  - Port number for IPFS peer connections
+  - Default: `4005`
+
+- `ipfs_domain` (string)
+  - Optional domain specification for IPFS connectivity
+  - Alternative to using raw port
+  - Format: `dns4/{domain}/tcp/{port}`
+  - Example: `dns4/ipfs.example.com/tcp/4001`

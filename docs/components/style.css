@@ -1,0 +1,39 @@
+.guide-card-href:hover {
+    text-decoration: none;
+}
+
+.guide-card-container {
+    /* Add fallback styles */
+    border: 1px solid var(--ifm-color-emphasis-300, #ccc); /* Default fallback color */
+    border-radius: var(--ifm-global-radius, 8px); /* Default fallback radius */
+    display: block;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    display: flex;
+}
+
+.guide-card-container:hover {
+    border-color: var(--ifm-color-primary, #e9f450); /* Default fallback to blue */
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 20%);
+}
+
+.guide-card-detail {
+    display: block;
+}
+
+.guide-card-icon {
+    color: var(--ifm-color-primary, #e9f450); /* Fallback color */
+    font-size: 2rem;
+    line-height: 2rem;
+    margin: 0.25rem 0.75rem auto 0;
+}
+
+.guide-card-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.guide-card-description {
+    font-size: 0.9rem;
+    color: var(--ifm-font-color-secondary, #6c757d); /* Fallback to muted text */
+}

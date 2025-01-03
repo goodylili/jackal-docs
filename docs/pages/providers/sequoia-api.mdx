@@ -1,0 +1,169 @@
+# Sequoia API Documentation
+
+## Overview
+The Sequoia API provides endpoints for interacting with the Jackal Protocol storage provider. This documentation outlines all available endpoints, their parameters, and expected responses.
+
+## Base Endpoints
+
+### GET Methods
+
+#### Get Provider Status
+```
+GET /
+```
+
+Returns basic information about the storage provider.
+
+**Parameters:** None required
+
+**Response:**
+- `status` (string): Current provider status, always returns "online" when available
+- `address` (string): Storage provider's address
+
+#### Get Version Information
+```
+GET /version
+```
+
+Retrieves the current software version information.
+
+**Parameters:** None required
+
+**Response:**
+- `version` (string): Git tag version (e.g., v1.0.2)
+- `build` (string): Git commit identifier
+- `chain-id` (string): Connected Tendermint chain ID
+
+#### Download File
+```
+GET /download
+```
+
+Downloads a specific file from the Jackal Protocol.
+
+**Parameters:**
+- `merkle` (hex string): File's merkle hash
+
+**Response:**
+- `file`: The requested file data
+
+#### List Files
+```
+GET /list
+```
+
+Retrieves a list of all files stored on the provider.
+
+**Parameters:** None required
+
+**Response:**
+- `files` (string[]): Array of merkle hashes (in hex format) for all stored files
+
+### IPFS-Related Endpoints
+
+#### List IPFS Peers
+```
+GET /ipfs/peers
+```
+
+Lists all connected IPFS peer IDs.
+
+**Parameters:** None required
+
+**Response:**
+- `peers` (string[]): Array of base64-encoded IPFS peer IDs
+
+#### Get Provider Hosts
+```
+GET /ipfs/hosts
+```
+
+Lists all accessible hosts for this storage provider.
+
+**Parameters:** None required
+
+**Response:**
+- `hosts` (string[]): Array of multiaddrs where the provider is accessible
+
+#### List IPFS Files
+```
+GET /ipfs/cids
+```
+
+Retrieves all files stored as IPFS CIDs.
+
+**Parameters:** None required
+
+**Response:**
+- `cids` (string[]): Array of IPFS CIDs stored on the provider
+
+#### Get IPFS/Jackal ID Mapping
+```
+GET /ipfs/cid_map
+```
+
+Provides a mapping between Jackal file IDs and IPFS CIDs.
+
+**Parameters:** None required
+
+**Response:**
+- `cid_map` (object): Key-value pairs mapping file merkles (hex strings) to IPFS CIDs
+
+### System Information
+
+#### Get Database State
+```
+GET /dump
+```
+
+Exports the complete database state.
+
+**Parameters:** None required
+
+**Response:**
+- `dump` (object): Complete database state as JSON
+
+#### Get Metrics
+```
+GET /metrics
+```
+
+Retrieves Prometheus-formatted metrics.
+
+**Parameters:** None required
+
+**Response:**
+- `metrics`: Prometheus-formatted metrics data
+
+### POST Methods
+
+#### Upload File
+```
+POST /upload
+```
+
+Uploads a new file to the Jackal Protocol.
+
+**Parameters** (multipart form):
+- `sender` (string): Jackal Address
+- `merkle` (hex string): File's merkle root
+- `start` (integer): File deal start block
+
+**Response:**
+- `merkle` (hex string): File's merkle hash
+- `Owner` (string): File deal owner's Jackal address
+- `Start` (integer): File deal start block
+- `CID` (string): IPFS CID for the file
+
+#### Create IPFS Folder
+```
+POST /ipfs/make_folder
+```
+
+Creates a new IPFS folder mapping.
+
+**Parameters** (plaintext):
+- Comma-separated list of IPFS CIDs
+
+**Response:**
+- `CID` (string): IPFS CID for the created folder
